@@ -13,17 +13,10 @@ app.post('/api/echo', (req, res) => {
     res.send(req.body.message)
 })
 
-const users = [
-    {
-        id:0,
-        username: 'testUser',
-        email: 'test@MediaList.com',
-        _password: 'testPass',
-    }
-];
+const users = [];
 
 class User {
-    static count = 1;
+    static count = 0;
     constructor(username, email, password) {
         try {
             this.id = User.count;
@@ -43,10 +36,16 @@ class User {
     }
 
     set password(value) {
+        if (value.length < 4) {
+            return;
+        }
         this._password = value;
     }
 }
 
+
+users.push(new User('testUser', 'test@MediaList.com', 'testPass'))
+console.log(users)
 app.post('/api/users', (req, res) => {
     const { username, email, password } = req.body;
 
@@ -55,7 +54,7 @@ app.post('/api/users', (req, res) => {
         res.send('пользватель с таким username или почтовым ящиком зарегестрирован')
         return;
     }
-    
+
     const currentUser = new User(username, email, password)
     users.push(currentUser)
     res.status(201)
@@ -75,7 +74,7 @@ app.get('/api/users', (req, res) => {
 
 })
 
-app.get('/api/users/:id', (req, res) => {
+app.get('/api/user/:id', (req, res) => {
     const { id, username, email } = users.find(el => el.id == req.params.id)
     const userById = {
         id: id,
@@ -84,6 +83,42 @@ app.get('/api/users/:id', (req, res) => {
     }
     res.send(userById);
 })
+
+app.put('/api/user/:id', (req, res) => {
+    const { username, email, password } = req.body;
+    const userById = users.find(el => el.id == req.params.id);
+    if (!userById && !users.find(el => el.username === username || el.email === email)) {
+        const newUser = new User(username, email, password);
+        users.push(newUser)
+        res.status(201)
+        res.send(newUser)
+        return;
+    } else if (userById && !users.find(el => el.username === username || el.email === email)) {
+        userById.username = username ?? userById.username;
+        userById.email = email ?? userById.email;
+        userById.password = password ?? userById.password;
+        res.status(200)
+        res.send(userById)
+    } else {
+        res.status(400)
+        res.send(userById)
+    }
+});
+
+app.patch('/api/user/:id', (req, res) => {
+    const { password } = req.body;
+    const userById = users.find(el => el.id == req.params.id);
+    userById.password = password ?? userById.password;
+    res.status(200);
+    res.send(userById);
+});
+
+app.delete('/api/user/:id', (req, res) => {
+    const userIndex = users.findIndex(el => el.id == req.params.id);
+    users.splice(userIndex, 1)
+    res.send('userById');
+});
+
 
 app.listen(PORT, () => {
     console.log(`Сервер запущен на http://localhost:${PORT}`);
