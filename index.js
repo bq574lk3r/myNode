@@ -43,17 +43,41 @@ class User {
     }
 }
 
-
 users.push(new User('testUser', 'test@MediaList.com', 'testPass'))
-console.log(users)
-app.post('/api/users', (req, res) => {
-    const { username, email, password } = req.body;
 
+
+function checkUser(req, res, next) {
+    const { username, email } = req.body;
     if (!!users.find(el => el.username === username || el.email === email)) {
-        res.status(400)
-        res.send('пользватель с таким username или почтовым ящиком зарегестрирован')
+        res.status(400).send('пользватель с таким username или почтовым ящиком зарегестрирован');
         return;
+    } else {
+        next();
     }
+}
+
+function checkUserUpdate(req, res, next) {
+    const { username, email } = req.body;
+    const findUser = users.find(el => el.username === username || el.email === email);
+    if (!!findUser && findUser?.id != req.params.id) {
+        res.status(400).send('пользватель с таким username или почтовым ящиком уже зарегестрирован');
+        return;
+    } else {
+        next();
+    }
+}
+
+function dataIsEmpty(req, res, next) {
+    const { username, email, password } = req.body;
+    if (username && email && password) {
+        next()
+    } else {
+        res.status(400).send('все поля должны быть заполнены');
+    }
+}
+
+app.post('/api/users', dataIsEmpty, checkUser, (req, res) => {
+    const { username, email, password } = req.body;
 
     const currentUser = new User(username, email, password)
     users.push(currentUser)
@@ -84,23 +108,20 @@ app.get('/api/user/:id', (req, res) => {
     res.send(userById);
 })
 
-app.put('/api/user/:id', (req, res) => {
+app.put('/api/user/:id', dataIsEmpty, checkUserUpdate, (req, res) => {
     const { username, email, password } = req.body;
     const userById = users.find(el => el.id == req.params.id);
-    if (!userById && !users.find(el => el.username === username || el.email === email)) {
+    if (!userById) {
         const newUser = new User(username, email, password);
         users.push(newUser)
         res.status(201)
         res.send(newUser)
         return;
-    } else if (userById && !users.find(el => el.username === username || el.email === email)) {
+    } else {
         userById.username = username ?? userById.username;
         userById.email = email ?? userById.email;
         userById.password = password ?? userById.password;
         res.status(200)
-        res.send(userById)
-    } else {
-        res.status(400)
         res.send(userById)
     }
 });
