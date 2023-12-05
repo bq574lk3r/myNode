@@ -87,15 +87,14 @@ app.post('/api/users', dataIsEmpty, checkUser, (req, res) => {
 })
 
 app.get('/api/users', (req, res) => {
-    res.send(users.reduce((result, item) => {
+    res.send(users.map((item) => {
         const { id, username, email } = item
-        result.push({
+        return {
             id: id,
             username: username,
             email: email,
-        })
-        return result;
-    }, []))
+        }
+    }))
 
 })
 
@@ -115,15 +114,17 @@ app.put('/api/user/:id', dataIsEmpty, checkUserUpdate, (req, res) => {
     if (!userById) {
         const newUser = new User(username, email, password);
         users.push(newUser)
-        res.status(201)
-        res.send(newUser)
+        res.status(201).send(newUser)
         return;
     } else {
-        userById.username = username ?? userById.username;
-        userById.email = email ?? userById.email;
-        userById.password = password ?? userById.password;
-        res.status(200)
-        res.send(userById)
+        Object.keys(userById).forEach(key => {
+            key = key.replace('_','');
+            if (req.body[key] != undefined && req.body[key] != null) {
+                userById[key] = req.body[key]
+            }
+        })
+
+        res.status(200).send(userById)
     }
 });
 
