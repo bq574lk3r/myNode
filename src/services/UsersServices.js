@@ -1,13 +1,12 @@
 const User = require('../models/User');
-const testUsers = require('../../seeders/seederData');
+const { testUsers } = require('../../seeders/seederData');
 const fileHelpers = require('../helpers/FileHelpers');
-const userDataFile = 'dataUser.json'
+const userDataFile = 'data.json'
 
-async function userDataIsEmpty(){
+async function userDataIsEmpty() {
     const data = await fileHelpers.readFile(userDataFile);
-    if(data.length === 0){
-  
-        testUsers.forEach(el => data.push(new User(el.username, el.email, el.password)))
+    if (data.users.length === 0) {
+        testUsers.forEach(el => data.users.push(new User(el.username, el.email, el.password)))
         fileHelpers.writeFile(userDataFile, data)
     }
 };
@@ -17,7 +16,8 @@ userDataIsEmpty();
 class UsersServices {
     async getUsers() {
         try {
-            return await fileHelpers.readFile(userDataFile);
+            const data = await fileHelpers.readFile(userDataFile)
+            return data.users
         } catch (error) {
             return err;
         }
@@ -27,7 +27,7 @@ class UsersServices {
     async getUserById(userId) {
         try {
             const data = await fileHelpers.readFile(userDataFile);
-            return data.find(el => el.id == userId)
+            return data.users.find(el => el.id == userId)
         } catch (error) {
             return err;
         }
@@ -38,7 +38,7 @@ class UsersServices {
         try {
             const currentUser = new User(username, email, password);
             const data = await fileHelpers.readFile(userDataFile);
-            data.push(currentUser);
+            data.users.push(currentUser);
             await fileHelpers.writeFile(userDataFile, data)
             return currentUser
         } catch (err) {
@@ -49,7 +49,7 @@ class UsersServices {
     async updateUser(id, body) {
         try {
             const data = await fileHelpers.readFile(userDataFile);
-            const userById = data.find(el => el.id == id);
+            const userById = data.users.find(el => el.id == id);
             Object.keys(userById).forEach(key => {
                 if (body[key] != undefined && body[key] != null) {
                     userById[key] = body[key]
@@ -66,7 +66,7 @@ class UsersServices {
     async changeUserPassword(id, newPassword) {
         try {
             const data = await fileHelpers.readFile(userDataFile);
-            const userById = data.find(el => el.id == id);
+            const userById = data.users.find(el => el.id == id);
             userById.password = newPassword ?? userById.password;
             await fileHelpers.writeFile(userDataFile, data);
             return userById;
@@ -78,8 +78,8 @@ class UsersServices {
     async deleteUser(id) {
         try {
             const data = await fileHelpers.readFile(userDataFile);
-            const userIndex = data.findIndex(el => el.id == id);
-            data.splice(userIndex, 1);
+            const userIndex = data.users.findIndex(el => el.id == id);
+            data.books.splice(userIndex, 1);
             await fileHelpers.writeFile(userDataFile, data);
             return 'deleted'
         } catch (err) {

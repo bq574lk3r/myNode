@@ -1,9 +1,9 @@
 const fileHelpers = require('../helpers/FileHelpers');
-const userDataFile = 'dataUser.json';
+const userDataFile = 'data.json';
 
 class UsersHelpers {
     async checkUserId(req, res, next) {
-        const users = await fileHelpers.readFile(userDataFile);
+        const { users } = await fileHelpers.readFile(userDataFile);
         const userById = users.find(el => el.id == req.params.id)
         if (userById) {
             next();
@@ -14,7 +14,7 @@ class UsersHelpers {
     }
 
     async checkUserData(req, res, next) {
-        const users = await fileHelpers.readFile(userDataFile);
+        const { users } = await fileHelpers.readFile(userDataFile);
         const { username, email } = req.body;
         if (!!users.find(el => el.username === username || el.email === email)) {
             res.status(400).send('пользватель с таким username или почтовым ящиком зарегестрирован');
@@ -25,7 +25,7 @@ class UsersHelpers {
     }
 
     async checkUserUpdate(req, res, next) {
-        const users = await fileHelpers.readFile(userDataFile);
+        const { users } = await fileHelpers.readFile(userDataFile);
         const { username, email } = req.body;
         const findUser = users.find(el => el.username === username || el.email === email);
         if (!!findUser && findUser?.id != req.params.id) {

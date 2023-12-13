@@ -4,7 +4,7 @@
   "description": "this workspace  for learning nodeJS ",
   "nodemonConfig": {
     "ignore": [
-      "dataUser.json"
+      "data.json"
     ]
   },
   "main": "index.js",

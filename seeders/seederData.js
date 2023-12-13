@@ -1,14 +1,19 @@
-const usersTest = [
+const testUsers = [
     {
         username: 'testUser',
         email: 'test@MediaList.com',
         password: 'testPass'
-    },
-    {
-        username: 'testUser1',
-        email: 'test1@MediaList.com',
-        password: 'test1Pass'
-    },
+    }
 ];
+const testBooks = [
+    {
+        title: 'Flowers for Algernon',
+        author: 'Daniel Keyes',
+        genre: ['Science fiction'],
+    }
+]
 
-module.exports = usersTest;
+module.exports = {
+    testUsers: testUsers,
+    testBooks: testBooks
+};

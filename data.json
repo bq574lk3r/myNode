@@ -1,0 +1,20 @@
+{
+  "users": [
+    {
+      "id": "2ce8abb1-2843-4ffd-9c87-645d8e30ffa1",
+      "username": "testUser",
+      "email": "test@MediaList.com",
+      "password": "testPass"
+    }
+  ],
+  "books": [
+    {
+      "id": "c36b6ded-95fd-47b1-8df9-c9313b9bc3b1",
+      "title": "Flowers for Algernon",
+      "author": "Daniel Keyes",
+      "genre": [
+        "Science fiction"
+      ]
+    }
+  ]
+}
