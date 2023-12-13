@@ -1,0 +1,14 @@
+[
+  {
+    "id": "2ce8abb1-2843-4ffd-9c87-645d8e30ffa1",
+    "username": "testUser",
+    "email": "test@MediaList.com",
+    "password": "testPass"
+  },
+  {
+    "id": "f1451d8a-f024-4229-b109-926514f4c56c",
+    "username": "testUser1",
+    "email": "test1@MediaList.com",
+    "password": "test1Pass"
+  }
+]

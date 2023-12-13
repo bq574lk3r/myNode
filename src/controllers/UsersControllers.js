@@ -1,28 +1,45 @@
 const { UsersServices } = require('../services/UsersServices')
 
 class UsersControllers {
-    getUsers(req, res) {
-        res.status(200).send(UsersServices.getUsers())
+    async getUsers(req, res) {
+        const data = await UsersServices.getUsers();
+        const result = data.map(el => {
+            const { id, username, email } = el;
+            return {
+                id: id,
+                username: username,
+                email: email,
+            }
+        })
+
+        res.status(200).send(result)
     }
-    getUserById(req, res) {
-        res.status(200).send(UsersServices.getUserById(req.params.id));
+    async getUserById(req, res) {
+        const { id, username, email } = await UsersServices.getUserById(req.params.id);
+        const user = {
+            id: id,
+            username: username,
+            email: email,
+        };
+
+        res.status(200).send(user);
     }
-    createUser(req, res) {
+    async createUser(req, res) {
         const { username, email, password } = req.body;
-        const newUser = UsersServices.createUser(username, email, password)
+        const newUser = await UsersServices.createUser(username, email, password)
         res.status(201).send(newUser)
     }
-    updateUser(req, res) {
-        const updatedUser = UsersServices.updateUser(req.params.id, req.body);
+    async updateUser(req, res) {
+        const updatedUser = await UsersServices.updateUser(req.params.id, req.body);
         res.status(200).send(updatedUser)
     }
-    changeUserPassword(req, res) {
+    async changeUserPassword(req, res) {
         const { password } = req.body;
-        res.status(200).send(UsersServices.changeUserPassword(req.params.id, password));
+        res.status(200).send(await UsersServices.changeUserPassword(req.params.id, password));
 
     }
-    deleteUser(req, res) {
-        res.send( UsersServices.deleteUser(req.params.id));
+    async deleteUser(req, res) {
+        res.send(await UsersServices.deleteUser(req.params.id));
     }
 
 }

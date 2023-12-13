@@ -6,21 +6,10 @@ class User {
             this.id = id ?? uuidv4();
             this.username = username;
             this.email = email;
-            this._password = password;
+            this.password = password;
         } catch (error) {
             return error
         }
-    }
-
-    get password() {
-        return this._password;
-    }
-
-    set password(value) {
-        if (value.length < 4) {
-            return;
-        }
-        this._password = value;
     }
 }
 

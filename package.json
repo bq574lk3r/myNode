@@ -2,6 +2,11 @@
   "name": "node_redev",
   "version": "1.0.0",
   "description": "this workspace  for learning nodeJS ",
+  "nodemonConfig": {
+    "ignore": [
+      "dataUser.json"
+    ]
+  },
   "main": "index.js",
   "scripts": {
     "test": "dev",
