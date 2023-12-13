@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 require('dotenv').config();
 const PORT = process.env.PORT;
-const User = require("./User.js")
+const User = require("./models/User.js")
 
 app.use(express.json());
 

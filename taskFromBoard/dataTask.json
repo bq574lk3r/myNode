@@ -1,0 +1,20 @@
+[
+  {
+    "id": "a6d69025-5acb-4cd3-b89e-862732b72db7",
+    "name": "Pasha",
+    "isMan": true,
+    "age": 27
+  },
+  {
+    "id": "fdf9b23b-101a-46cf-9332-05aa060f87d7",
+    "name": "Katya",
+    "isMan": false,
+    "age": 25
+  },
+  {
+    "id": "b06d5ea1-d9fb-4003-b7d1-ae1231c2a8d4",
+    "name": "Pepe",
+    "isMan": true,
+    "age": 42
+  }
+]

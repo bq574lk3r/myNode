@@ -1,17 +1,18 @@
 {
   "name": "node_redev",
   "version": "1.0.0",
-  "description": "this workspace  for learning nodeJS ",
+  "description": "this workspace for learning nodeJS ",
   "nodemonConfig": {
     "ignore": [
-      "data.json"
+      "data.json",
+      "dataTask.json"
     ]
   },
   "main": "index.js",
   "scripts": {
     "test": "dev",
     "dev": "nodemon src/app.js",
-    "task-1": "nodemon task-1/task-1.js"
+    "task": "nodemon taskFromBoard/app.js"
   },
   "author": "Pavel M.",
   "license": "ISC",

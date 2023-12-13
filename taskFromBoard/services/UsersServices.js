@@ -1,44 +1,49 @@
 const User = require('../models/User');
-const { testUsers } = require('../../seeders/seederData');
 const fileHelpers = require('../helpers/FileHelpers');
-const userDataFile = 'data.json'
-
-async function userDataIsEmpty() {
-    const data = await fileHelpers.readFile(userDataFile);
-    if (data.users.length === 0) {
-        testUsers.forEach(el => data.users.push(new User(el.username, el.email, el.password)))
-        fileHelpers.writeFile(userDataFile, data)
-    }
-};
-userDataIsEmpty();
-
+const userDataFile = 'taskFromBoard/dataTask.json';
 
 class UsersServices {
     async getUsers() {
         try {
             const data = await fileHelpers.readFile(userDataFile)
-            return data.users
+            return data
         } catch (error) {
             return err;
         }
-
     }
-
-    async getUserById(userId) {
+    async getUsersByGender(gender) {
         try {
-            const data = await fileHelpers.readFile(userDataFile);
-            return data.users.find(el => el.id == userId)
+            const data = await fileHelpers.readFile(userDataFile)
+            const result = data.filter(el => {
+                let currentGender
+                switch (gender) {
+                    case 'm':
+                        currentGender = el.isMan;
+                        break;
+                    case 'f':
+                        currentGender = !el.isMan;
+                        break
+                    default:
+                        currentGender = false;
+                }
+                return currentGender;
+            })
+            return result
         } catch (error) {
             return err;
         }
-
     }
 
-    async createUser(username, email, password) {
+    async getFiltredAge(min, max) {
+        const data = await fileHelpers.readFile(userDataFile)
+        return data.filter(el => min <= el.age && max >= el.age);
+    }
+
+    async createUser(name, isMan, age) {
         try {
-            const currentUser = new User(username, email, password);
+            const currentUser = new User(name, isMan, age);
             const data = await fileHelpers.readFile(userDataFile);
-            data.users.push(currentUser);
+            data.push(currentUser);
             await fileHelpers.writeFile(userDataFile, data)
             return currentUser
         } catch (err) {
@@ -49,7 +54,7 @@ class UsersServices {
     async updateUser(id, body) {
         try {
             const data = await fileHelpers.readFile(userDataFile);
-            const userById = data.users.find(el => el.id == id);
+            const userById = data.find(el => el.id == id);
             Object.keys(userById).forEach(key => {
                 if (body[key] != undefined && body[key] != null) {
                     userById[key] = body[key]
@@ -63,13 +68,18 @@ class UsersServices {
         }
     }
 
-    async changeUserPassword(id, newPassword) {
+    async changeData(id, body) {
         try {
             const data = await fileHelpers.readFile(userDataFile);
-            const userById = data.users.find(el => el.id == id);
-            userById.password = newPassword ?? userById.password;
+            const userById = data.find(el => el.id == id);
+            Object.keys(userById).forEach(key => {
+                if (body[key] != undefined && body[key] != null) {
+                    userById[key] = body[key]
+                }
+            })
             await fileHelpers.writeFile(userDataFile, data);
             return userById;
+
         } catch (err) {
             return err;
         }
@@ -78,14 +88,13 @@ class UsersServices {
     async deleteUser(id) {
         try {
             const data = await fileHelpers.readFile(userDataFile);
-            const userIndex = data.users.findIndex(el => el.id == id);
-            data.users.splice(userIndex, 1);
+            const userIndex = data.findIndex(el => el.id == id);
+            data.splice(userIndex, 1);
             await fileHelpers.writeFile(userDataFile, data);
             return 'deleted'
         } catch (err) {
             return err;
         }
-
     }
 }
 
