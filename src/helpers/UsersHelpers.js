@@ -36,15 +36,6 @@ class UsersHelpers {
         }
     }
 
-    dataIsEmpty(req, res, next) {
-        const { username, email, password } = req.body;
-        if (username && email && password) {
-            next()
-        } else {
-            res.status(400).send('все поля должны быть заполнены');
-        }
-    }
-
 }
 
 module.exports = new UsersHelpers()
